@@ -1,0 +1,12 @@
+{ "isActive": true } = 51 
+{ "age": { "$gt": 26 } } = 54
+{ "age": { "$gt": 26, "$lte": 30 } } = 19
+{ "eyeColor": { "$in": ["brown", "blue"] } } = 66
+{ "eyeColor": "green" } = 31
+{ "eyeColor": { "$nin": ["green", "blue"] } } = 35
+{ "company": "FITCORE" } con Project {"email": 1} = 1 ("victoria.solis@fitcore.biz")
+
+ 
+
+
+
