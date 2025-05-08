@@ -1,6 +1,12 @@
+require("dotenv").config(); 
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
+const sendgrid = require('@sendgrid/mail'); 
+
+
+sendgrid.setApiKey(process.env.SENDGRID_API_KEY);  
+
 const authorRoutes = require("./Route/author");
 const postRoutes = require("./Route/post");
 const blogPostRoutes = require("./Route/blogPost");
@@ -22,5 +28,5 @@ mongoose.connect(connStr)
 .catch(err => console.error("Errore di connessione a MongoDB Atlas:", err));
 
 server.listen(PORT, () => {
-console.log(`Server attivo su http://localhost:${PORT}`);
+  console.log(`Server attivo su http://localhost:${PORT}`);
 });
