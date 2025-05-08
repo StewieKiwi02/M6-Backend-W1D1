@@ -5,14 +5,13 @@ const cloudinary = require("cloudinary").v2;
 
 const router = express.Router();
 
-
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
 router.patch("/:blogPostId/cover", upload.single("cover"), async (req, res) => {
   try {
     cloudinary.uploader.upload_stream(
-      { resource_type: "auto" }, 
+      { resource_type: "auto" },
       async (error, result) => {
         if (error) {
           return res.status(500).json({ message: "Errore nel caricamento su Cloudinary", error: error.message });
@@ -23,22 +22,19 @@ router.patch("/:blogPostId/cover", upload.single("cover"), async (req, res) => {
           return res.status(404).json({ message: "Post del blog non trovato" });
         }
 
-
         blogPost.coverUrl = result.secure_url;
         await blogPost.save();
-
 
         res.status(200).json({
           message: "Copertura caricata con successo",
           coverUrl: result.secure_url
         });
       }
-    ).end(req.file.buffer); 
+    ).end(req.file.buffer);
   } catch (err) {
     res.status(500).json({ message: "Errore nel server", error: err.message });
   }
 });
-
 
 router.get("/", async (req, res) => {
   try {
@@ -89,6 +85,70 @@ router.delete("/:id", async (req, res) => {
     const deleted = await BlogPost.findByIdAndDelete(req.params.id);
     if (!deleted) return res.status(404).json({ message: "Post non trovato" });
     res.json({ message: "Post eliminato con successo" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+router.get("/:id/comments", async (req, res) => {
+  try {
+    const post = await BlogPost.findById(req.params.id);
+    if (!post) return res.status(404).json({ message: "Post non trovato" });
+    res.json(post.comments);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+router.get("/:id/comments/:commentId", async (req, res) => {
+  try {
+    const post = await BlogPost.findById(req.params.id);
+    if (!post) return res.status(404).json({ message: "Post non trovato" });
+    const comment = post.comments.id(req.params.commentId);
+    if (!comment) return res.status(404).json({ message: "Commento non trovato" });
+    res.json(comment);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+router.post("/:id", async (req, res) => {
+  try {
+    const post = await BlogPost.findById(req.params.id);
+    if (!post) return res.status(404).json({ message: "Post non trovato" });
+    post.comments.push(req.body);
+    await post.save();
+    res.status(201).json(post.comments[post.comments.length - 1]);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
+router.put("/:id/comments/:commentId", async (req, res) => {
+  try {
+    const post = await BlogPost.findById(req.params.id);
+    if (!post) return res.status(404).json({ message: "Post non trovato" });
+    const comment = post.comments.id(req.params.commentId);
+    if (!comment) return res.status(404).json({ message: "Commento non trovato" });
+
+    comment.set(req.body);
+    await post.save();
+    res.json(comment);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+router.delete("/:id/comments/:commentId", async (req, res) => {
+  try {
+    const post = await BlogPost.findById(req.params.id);
+    if (!post) return res.status(404).json({ message: "Post non trovato" });
+    const comment = post.comments.id(req.params.commentId);
+    if (!comment) return res.status(404).json({ message: "Commento non trovato" });
+
+    comment.remove();
+    await post.save();
+    res.json({ message: "Commento eliminato con successo" });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
