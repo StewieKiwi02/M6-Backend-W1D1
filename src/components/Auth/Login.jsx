@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import { Container, Row, Col, Form, Button, Alert, Spinner } from 'react-bootstrap';
+import { GoogleLogin } from '@react-oauth/google';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -23,11 +24,27 @@ const Login = () => {
       });
 
       localStorage.setItem('token', response.data.token);
-
       history.push('/dashboard');
     } catch (err) {
       setError('Credenziali non valide o errore nel login');
       setLoading(false);
+    }
+  };
+
+  const handleGoogleLogin = async (response) => {
+    const token = response.credential;
+
+    if (token) {
+      try {
+        const res = await axios.post('http://localhost:3001/api/authors/google', {
+          token
+        });
+
+        localStorage.setItem('token', res.data.token);
+        history.push('/dashboard');
+      } catch (err) {
+        setError('Errore durante il login con Google');
+      }
     }
   };
 
@@ -66,6 +83,14 @@ const Login = () => {
                 {loading ? <Spinner animation="border" size="sm" /> : 'Accedi'}
               </Button>
             </Form>
+
+            <div className="mt-3">
+              <GoogleLogin 
+                onSuccess={handleGoogleLogin}
+                onError={() => setError('Errore nel login con Google')}
+                useOneTap
+              />
+            </div>
           </div>
         </Col>
       </Row>

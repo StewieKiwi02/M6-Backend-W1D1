@@ -5,6 +5,7 @@ const Author = require("../Models/author");
 const sendEmail = require("../Utils/sendEmail");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const passport = require("passport");
 
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -45,6 +46,17 @@ router.post("/login", async (req, res) => {
     res.status(500).json({ message: "Errore nel server", error: err.message });
   }
 });
+
+router.get("/google", passport.authenticate("google", { scope: ["email", "profile"] }));
+
+router.get(
+  "/google/callback",
+  passport.authenticate("google", { failureRedirect: "/login" }),
+  (req, res) => {
+    const token = req.user.token;
+    res.redirect(`http://localhost:3000/dashboard?token=${token}`);
+  }
+);
 
 router.get("/me", authenticateToken, async (req, res) => {
   try {
