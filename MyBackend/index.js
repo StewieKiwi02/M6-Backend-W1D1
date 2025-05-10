@@ -12,7 +12,7 @@ const blogPostRoutes = require("./Route/blogPost");
 const authRoutes = require("./Route/authRoutes");
 
 const server = express();
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 
 sendgrid.setApiKey(process.env.SENDGRID_API_KEY);
 
@@ -25,6 +25,10 @@ server.use("/api/auth", authRoutes);
 server.use("/api/authors", authorRoutes);
 server.use("/api/blogPost", postRoutes);
 server.use("/api/blogPosts", blogPostRoutes);
+
+server.get("/", (req, res) => {
+  res.send("Server attivo e funzionante!");
+});
 
 const connStr = 'mongodb+srv://Kiwi:SecretKey6990%3F%3F@testcluster.kcluamm.mongodb.net/blogDB?retryWrites=true&w=majority';
 
