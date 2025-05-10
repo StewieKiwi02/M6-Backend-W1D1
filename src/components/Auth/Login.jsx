@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Container, Row, Col, Form, Button, Alert, Spinner } from 'react-bootstrap';
 import { GoogleLogin } from '@react-oauth/google';
 
@@ -10,7 +10,7 @@ const Login = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,7 +24,7 @@ const Login = () => {
       });
 
       localStorage.setItem('token', response.data.token);
-      history.push('/dashboard');
+      navigate('/dashboard');
     } catch (err) {
       setError('Credenziali non valide o errore nel login');
       setLoading(false);
@@ -41,7 +41,7 @@ const Login = () => {
         });
 
         localStorage.setItem('token', res.data.token);
-        history.push('/dashboard');
+        navigate('/dashboard');
       } catch (err) {
         setError('Errore durante il login con Google');
       }
@@ -55,7 +55,7 @@ const Login = () => {
           <div className="text-center">
             <h2>Login</h2>
             <Form onSubmit={handleSubmit}>
-              <Form.Group controlId="email">
+              <Form.Group controlId="email" className="mb-3">
                 <Form.Label>Email</Form.Label>
                 <Form.Control
                   type="email"
@@ -66,7 +66,7 @@ const Login = () => {
                 />
               </Form.Group>
 
-              <Form.Group controlId="password">
+              <Form.Group controlId="password" className="mb-3">
                 <Form.Label>Password</Form.Label>
                 <Form.Control
                   type="password"
@@ -79,13 +79,13 @@ const Login = () => {
 
               {error && <Alert variant="danger">{error}</Alert>}
 
-              <Button variant="primary" type="submit" block disabled={loading}>
+              <Button variant="primary" type="submit" className="w-100" disabled={loading}>
                 {loading ? <Spinner animation="border" size="sm" /> : 'Accedi'}
               </Button>
             </Form>
 
             <div className="mt-3">
-              <GoogleLogin 
+              <GoogleLogin
                 onSuccess={handleGoogleLogin}
                 onError={() => setError('Errore nel login con Google')}
                 useOneTap
