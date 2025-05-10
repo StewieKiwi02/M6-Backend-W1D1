@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Container } from "react-bootstrap";
 import BlogList from "../../components/blog/blog-list/BlogList";
 import axios from "axios";
-import NavBar from "../../components/navbar/NavBar";
+import NavBar from "../../components/navbar/BlogNavbar";
 import "./styles.css";
 
 const Home = props => {
