@@ -4,7 +4,7 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const sendgrid = require('@sendgrid/mail'); 
 const passport = require("passport");
-require("../config/googleStrategy");
+require("../Config/googleStrategy");
 
 const authorRoutes = require("./Route/author");
 const postRoutes = require("./Route/post");
