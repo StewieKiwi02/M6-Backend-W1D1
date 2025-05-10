@@ -53,7 +53,7 @@ router.get(
   "/google/callback",
   passport.authenticate("google", { failureRedirect: "/login" }),
   (req, res) => {
-    const token = req.user.token;
+    const token = jwt.sign({ authorId: req.user._id }, JWT_SECRET, { expiresIn: "1h" });
     res.redirect(`http://localhost:3000/dashboard?token=${token}`);
   }
 );
