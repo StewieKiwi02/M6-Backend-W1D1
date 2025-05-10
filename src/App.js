@@ -9,7 +9,7 @@ import Register from "./components/Auth/Register";
 import Login from "./components/Auth/Login";
 import AuthorList from "./components/Auth/AuthorList";
 import AuthorForm from "./components/Auth/AuthorForm";
-import AuthorDetails from "./components/Auth/AuthorDetails";
+import AuthorDetails from "./components/Auth/AuthorDetails.js";
 
 function App() {
   return (
